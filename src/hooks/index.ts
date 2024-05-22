@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppDispatch, RootState} from '../store/store';
 import {
@@ -10,6 +10,7 @@ import {
 } from '../services/middlewares';
 
 export function useGetAllPokemons() {
+  const [isReady, setIsReady] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
 
   const {data, status, offset} = useSelector((state: RootState) =>
@@ -17,10 +18,17 @@ export function useGetAllPokemons() {
   );
 
   useEffect(() => {
-    if (status === undefined || status === 'fetching') {
+    if (!isReady || status === undefined) {
       dispatch(fetchAll({offset}));
+      setIsReady(true);
     }
-  }, [status, dispatch, offset]);
+  }, [isReady, status, dispatch, offset]);
+
+  useEffect(() => {
+    if (status === 'fetching') {
+      setIsReady(false);
+    }
+  }, [status]);
 
   const isUninitialized = status === undefined;
   const isLoading = status === 'pending' || status === undefined;

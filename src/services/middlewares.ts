@@ -17,7 +17,6 @@ export const fetchAll = createAsyncThunk<MinimalLink[], IOptionalConfig>(
       `https://pokeapi.co/api/v2/pokemon/?limit=${limit}&offset=${offset}`,
     );
     const data = (await response.json()) as PokemonPageResult;
-    console.log('response', response);
     if (response.status < 200 || response.status >= 300) {
       return rejectWithValue(data);
     }
