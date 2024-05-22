@@ -14,40 +14,40 @@ export type Sprites = {
   front_shiny: string;
   other: {
     dream_world: unknown;
-    "official-artwork": unknown;
+    'official-artwork': unknown;
   };
   versions: {
-    "generation-i": {
-      "red-blue": unknown;
+    'generation-i': {
+      'red-blue': unknown;
       yellow: unknown;
     };
-    "generation-ii": {
+    'generation-ii': {
       crystal: unknown;
       gold: unknown;
       silver: unknown;
     };
-    "generation-iii": {
+    'generation-iii': {
       emerald: unknown;
-      "firered-leafgreen": unknown;
-      "ruby-sapphire": unknown;
+      'firered-leafgreen': unknown;
+      'ruby-sapphire': unknown;
     };
-    "generation-iv": {
-      "diamond-pearl": unknown;
-      "heartgold-soulsilver": unknown;
+    'generation-iv': {
+      'diamond-pearl': unknown;
+      'heartgold-soulsilver': unknown;
       platinum: unknown;
     };
-    "generation-v": {
-      "black-white": unknown;
+    'generation-v': {
+      'black-white': unknown;
     };
-    "generation-vi": {
-      "omegaruby-alphsapphire": unknown;
-      "x-y": unknown;
+    'generation-vi': {
+      'omegaruby-alphsapphire': unknown;
+      'x-y': unknown;
     };
-    "generation-vii": {
+    'generation-vii': {
       icons: unknown;
-      "ultra-sun-ultra-moon": unknown;
+      'ultra-sun-ultra-moon': unknown;
     };
-    "generation-viii": {
+    'generation-viii': {
       icons: unknown;
     };
   };
@@ -107,7 +107,12 @@ export type PokemonPageResult = {
   results: MinimalLink[];
 };
 
-export type RequestState = 'pending' | 'fulfilled' | 'rejected' | 'idle' | 'fetching';
+export type RequestState =
+  | 'pending'
+  | 'fulfilled'
+  | 'rejected'
+  | 'idle'
+  | 'fetching';
 
 export type IOptionalConfig = {
   limit?: number;

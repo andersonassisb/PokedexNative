@@ -5,7 +5,7 @@ jest.mock('react-native-reanimated', () =>
 );
 jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
 
-import { cleanup } from '@testing-library/react-native';
+import {cleanup} from '@testing-library/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Mock do AsyncStorage

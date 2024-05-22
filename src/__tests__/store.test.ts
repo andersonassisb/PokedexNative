@@ -1,4 +1,4 @@
-import { persistStore } from 'redux-persist';
+import {persistStore} from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import store from '../store/store';

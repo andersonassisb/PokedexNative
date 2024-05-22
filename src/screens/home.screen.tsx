@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, {useCallback} from 'react';
 import {
   Text,
   View,
@@ -7,26 +7,26 @@ import {
   ListRenderItem,
   TouchableOpacity,
 } from 'react-native';
-import { capitalize } from 'lodash';
-import { dispatch } from '../store/store';
-import { useGetAllPokemons } from '../hooks';
-import { Loading } from '../components/loading';
-import { MinimalLink } from '../services/types';
-import { useNavigation } from '@react-navigation/native';
-import { incrementOffset } from '../services/middlewares';
-import { HomeScreenNavigationProp } from '../navigation/types';
+import {capitalize} from 'lodash';
+import {dispatch} from '../store/store';
+import {useGetAllPokemons} from '../hooks';
+import {Loading} from '../components/loading';
+import {MinimalLink} from '../services/types';
+import {useNavigation} from '@react-navigation/native';
+import {incrementOffset} from '../services/middlewares';
+import {HomeScreenNavigationProp} from '../navigation/types';
 
 interface Props {
   testID?: string;
 }
 
-const HomeScreen: React.FC<Props> = ({ testID = 'HomeScreen' }) => {
+const HomeScreen: React.FC<Props> = ({testID = 'HomeScreen'}) => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
 
-  const { data, isError, isLoading } = useGetAllPokemons();
+  const {data, isError, isLoading} = useGetAllPokemons();
 
   const renderItem = useCallback<ListRenderItem<MinimalLink>>(
-    ({ item, index }) => {
+    ({item, index}) => {
       const onPress = () => {
         navigation.navigate('Details', {
           title: capitalize(item.name),
@@ -37,8 +37,7 @@ const HomeScreen: React.FC<Props> = ({ testID = 'HomeScreen' }) => {
         <TouchableOpacity
           style={styles.pokemonCard}
           testID={`${testID}-pokemon-${index}`}
-          onPress={onPress}
-        >
+          onPress={onPress}>
           <Text style={styles.text}>{item.name}</Text>
         </TouchableOpacity>
       );

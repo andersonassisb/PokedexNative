@@ -1,5 +1,5 @@
-import React from "react";
-import { StyleSheet, ActivityIndicator, View } from "react-native";
+import React from 'react';
+import {StyleSheet, ActivityIndicator, View} from 'react-native';
 
 export const Loading: React.FC = () => {
   return (

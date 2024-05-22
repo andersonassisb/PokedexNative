@@ -1,5 +1,5 @@
-import { combineReducers } from 'redux';
-import { pokemonSlice, pokemonsSlice } from '../../services/middlewares';
+import {combineReducers} from 'redux';
+import {pokemonSlice, pokemonsSlice} from '../../services/middlewares';
 
 const rootReducer = combineReducers({
   pokemons: pokemonsSlice.reducer,
