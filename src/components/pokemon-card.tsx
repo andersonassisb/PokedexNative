@@ -86,7 +86,7 @@ const PokemonCard: React.FC<Props> = ({
           <Text
             style={[
               styles.text,
-              {color: '#faf7e1'},
+              {color: colors.brand.secondary},
             ]}>{`#${pokemon.data.id}`}</Text>
           <Text style={[styles.text, {marginVertical: 8}]}>{pokemon.name}</Text>
         </View>

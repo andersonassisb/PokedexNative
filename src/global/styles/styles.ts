@@ -1,5 +1,9 @@
 export default {
   colors: {
+    brand: {
+      primary: '#394069',
+      secondary: '#faf7e1',
+    },
     background: '#343D64',
     text: '#F7B916',
     light_text: '#ffff',

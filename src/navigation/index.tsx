@@ -1,25 +1,27 @@
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {
-  StackNavigationOptions,
   createStackNavigator,
+  StackNavigationOptions,
 } from '@react-navigation/stack';
-
 import {RootStackParamList} from './types';
 import HomeScreen from '../screens/home.screen';
+import {useTheme} from '../global/styles/context';
 import DetailsScreen from '../screens/details.screen';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
 function StackNavigator() {
+  const {colors} = useTheme();
+
   const headerProps = {
-    headerTintColor: '#394069',
-    headerShadowVisible: true,
     headerTitleStyle: {
       fontSize: 20,
     },
+    headerShadowVisible: true,
+    headerTintColor: colors.brand.primary,
     headerStyle: {
-      backgroundColor: '#faf7e1',
+      backgroundColor: colors.brand.secondary,
     },
   } as StackNavigationOptions;
 

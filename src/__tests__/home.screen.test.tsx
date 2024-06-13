@@ -1,10 +1,10 @@
 import React from 'react';
 import {Provider} from 'react-redux';
 import configureStore from 'redux-mock-store';
-import {render} from '@testing-library/react-native';
-import {NavigationContainer} from '@react-navigation/native';
-
 import HomeScreen from '../screens/home.screen';
+import {render} from '@testing-library/react-native';
+import {ThemeProvider} from '../global/styles/context';
+import {NavigationContainer} from '@react-navigation/native';
 
 jest.mock('redux-persist', () => {
   const originalModule = jest.requireActual('redux-persist');
@@ -39,9 +39,11 @@ describe('Home Screen', () => {
   it('should render the Home screen correctly', async () => {
     render(<HomeScreen />, {
       wrapper: ({children}) => (
-        <NavigationContainer>
-          <Provider store={store}>{children}</Provider>
-        </NavigationContainer>
+        <ThemeProvider>
+          <NavigationContainer>
+            <Provider store={store}>{children}</Provider>
+          </NavigationContainer>
+        </ThemeProvider>
       ),
     });
   });

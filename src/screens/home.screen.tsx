@@ -8,7 +8,15 @@ import PokemonCard from '../components/pokemon-card';
 import {useNavigation} from '@react-navigation/native';
 import {incrementOffset} from '../services/middlewares';
 import {HomeScreenNavigationProp} from '../navigation/types';
-import {Text, View, FlatList, StyleSheet, ListRenderItem} from 'react-native';
+import {
+  Text,
+  View,
+  FlatList,
+  StyleSheet,
+  ListRenderItem,
+  RefreshControl,
+} from 'react-native';
+import {useTheme} from '../global/styles/context';
 
 interface Props {
   testID?: string;
@@ -17,7 +25,9 @@ interface Props {
 const HomeScreen: React.FC<Props> = ({testID = 'HomeScreen'}) => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
 
-  const {data, isError, isLoading} = useGetAllPokemons();
+  const {colors} = useTheme();
+
+  const {data, isError, isLoading, loadPokemons} = useGetAllPokemons();
 
   const renderItem = useCallback<ListRenderItem<IResult>>(({item, index}) => {
     const onPress = () => {
@@ -57,7 +67,9 @@ const HomeScreen: React.FC<Props> = ({testID = 'HomeScreen'}) => {
   };
 
   return (
-    <View style={styles.container} testID={testID}>
+    <View
+      style={[styles.container, {backgroundColor: colors.brand.secondary}]}
+      testID={testID}>
       <FlatList
         data={data}
         numColumns={2}
@@ -70,6 +82,13 @@ const HomeScreen: React.FC<Props> = ({testID = 'HomeScreen'}) => {
         ListEmptyComponent={ListEmptyComponent}
         keyExtractor={(_, index) => String(index)}
         contentContainerStyle={styles.listContent}
+        refreshControl={
+          <RefreshControl
+            refreshing={isLoading}
+            onRefresh={loadPokemons}
+            tintColor={colors.brand.primary}
+          />
+        }
       />
     </View>
   );
@@ -80,7 +99,6 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#faf7e1',
   },
   list: {
     flex: 1,
