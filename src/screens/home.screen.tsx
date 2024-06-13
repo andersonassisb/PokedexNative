@@ -1,20 +1,14 @@
 import React, {useCallback} from 'react';
-import {
-  Text,
-  View,
-  FlatList,
-  StyleSheet,
-  ListRenderItem,
-  TouchableOpacity,
-} from 'react-native';
 import {capitalize} from 'lodash';
 import {dispatch} from '../store/store';
 import {useGetAllPokemons} from '../hooks';
 import {Loading} from '../components/loading';
 import {MinimalLink} from '../services/types';
+import PokemonCard from '../components/pokemon-card';
 import {useNavigation} from '@react-navigation/native';
 import {incrementOffset} from '../services/middlewares';
 import {HomeScreenNavigationProp} from '../navigation/types';
+import {Text, View, FlatList, StyleSheet, ListRenderItem} from 'react-native';
 
 interface Props {
   testID?: string;
@@ -34,12 +28,11 @@ const HomeScreen: React.FC<Props> = ({testID = 'HomeScreen'}) => {
         });
       };
       return (
-        <TouchableOpacity
-          style={styles.pokemonCard}
+        <PokemonCard
           testID={`${testID}-pokemon-${index}`}
-          onPress={onPress}>
-          <Text style={styles.text}>{item.name}</Text>
-        </TouchableOpacity>
+          onPress={onPress}
+          data={item}
+        />
       );
     },
     [],
@@ -50,7 +43,7 @@ const HomeScreen: React.FC<Props> = ({testID = 'HomeScreen'}) => {
   };
 
   const renderFooter = () => {
-    if (isLoading) {
+    if (!!data.length && isLoading) {
       return <Loading />;
     }
     return null;
@@ -70,6 +63,8 @@ const HomeScreen: React.FC<Props> = ({testID = 'HomeScreen'}) => {
     <View style={styles.container} testID={testID}>
       <FlatList
         data={data}
+        numColumns={2}
+        style={styles.list}
         renderItem={renderItem}
         onEndReached={loadMore}
         onEndReachedThreshold={0.1}
@@ -77,6 +72,7 @@ const HomeScreen: React.FC<Props> = ({testID = 'HomeScreen'}) => {
         ListFooterComponent={renderFooter}
         ListEmptyComponent={ListEmptyComponent}
         keyExtractor={(_, index) => String(index)}
+        contentContainerStyle={styles.listContent}
       />
     </View>
   );
@@ -89,13 +85,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
-  pokemonCard: {
-    padding: 24,
-    borderBottomWidth: 1,
-    backgroundColor: 'white',
-    borderBottomColor: '#ccc',
+  list: {
+    flex: 1,
   },
-  text: {
-    textTransform: 'capitalize',
+  listContent: {
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 });

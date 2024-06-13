@@ -12,7 +12,10 @@
     "lint:fix": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\"",
     "prettier:write": "npx prettier --write **/*.{js,jsx,ts,tsx,json} && npx prettier --write *.{js,jsx,ts,tsx,json}",
     "prepare": "husky",
-    "test": "jest"
+    "test": "jest",
+    "cleaninstall:android": "cd android && ./gradlew clean && cd ..",
+    "cleaninstall:ios": "cd ios && rm -rf pods Podfile.lock && pod deintegrate && npx pod-install && cd ..",
+    "cleaninstall:all": "watchman watch-del-all && rm -rf node_modules /tmp/metro-* && yarn install && yarn cleaninstall:ios && yarn cleaninstall:android"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.23.1",
