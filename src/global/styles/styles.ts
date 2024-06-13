@@ -2,6 +2,7 @@ export default {
   colors: {
     brand: {
       primary: '#394069',
+      softGray: '#b4b5bf',
       secondary: '#faf7e1',
     },
     background: '#343D64',

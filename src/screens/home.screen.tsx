@@ -1,8 +1,8 @@
-import React, {useCallback} from 'react';
-import {capitalize} from 'lodash';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {dispatch} from '../store/store';
 import {IResult} from '../services/types';
 import {useGetAllPokemons} from '../hooks';
+import {capitalize, debounce} from 'lodash';
 import {Loading} from '../components/loading';
 import PokemonCard from '../components/pokemon-card';
 import {useNavigation} from '@react-navigation/native';
@@ -12,11 +12,14 @@ import {
   Text,
   View,
   FlatList,
+  TextInput,
   StyleSheet,
   ListRenderItem,
   RefreshControl,
+  useWindowDimensions,
 } from 'react-native';
 import {useTheme} from '../global/styles/context';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 interface Props {
   testID?: string;
@@ -25,9 +28,23 @@ interface Props {
 const HomeScreen: React.FC<Props> = ({testID = 'HomeScreen'}) => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
 
+  const [search, setSearch] = useState<string>('');
+  const [filteredData, setFilteredData] = useState<IResult[]>();
+
   const {colors} = useTheme();
+  const {width} = useWindowDimensions();
 
   const {data, isError, isLoading, loadPokemons} = useGetAllPokemons();
+
+  const onFilterPokemons = useCallback(
+    debounce((text: string) => {
+      const filtered = data.filter(pokemon =>
+        pokemon.name.includes(text.toLowerCase().trim()),
+      );
+      setFilteredData(filtered);
+    }, 200),
+    [data],
+  );
 
   const renderItem = useCallback<ListRenderItem<IResult>>(({item, index}) => {
     const onPress = () => {
@@ -45,33 +62,78 @@ const HomeScreen: React.FC<Props> = ({testID = 'HomeScreen'}) => {
     );
   }, []);
 
+  const isEnabledLoadMore = useMemo(() => {
+    if (search && !filteredData?.length) return false;
+    if (!data.length) return false;
+    return true;
+  }, [search, filteredData, data]);
+
   const loadMore = () => {
+    if (!isEnabledLoadMore) return;
     dispatch(incrementOffset());
   };
 
+  useEffect(() => {
+    onFilterPokemons(search);
+  }, [search, onFilterPokemons]);
+
   const renderFooter = () => {
-    if (!!data.length && isLoading) {
+    if (!isEnabledLoadMore) return null;
+    if (isLoading) {
       return <Loading />;
     }
     return null;
   };
 
+  const renderSearchInput = () => {
+    return (
+      <View style={styles.search}>
+        <View
+          style={[
+            styles.inputContainer,
+            {
+              borderWidth: 1,
+              width: width - 32,
+              borderColor: colors.brand.primary,
+            },
+          ]}>
+          <Icon
+            size={18}
+            name="search"
+            style={styles.searchIcon}
+            color={colors.brand.primary}
+          />
+          <TextInput
+            value={search}
+            style={[
+              styles.input,
+              {
+                color: colors.brand.primary,
+              },
+            ]}
+            placeholder="Pokémon"
+            onChangeText={setSearch}
+            underlineColorAndroid="transparent"
+            placeholderTextColor={colors.brand.softGray}
+          />
+        </View>
+      </View>
+    );
+  };
+
   const ListEmptyComponent = () => {
-    if (isLoading) {
-      return <Loading />;
-    }
     if (isError) {
       return <Text>Something went wrong</Text>;
     }
-    return null;
+    return <Text>No results found</Text>;
   };
 
   return (
     <View
       style={[styles.container, {backgroundColor: colors.brand.secondary}]}
       testID={testID}>
+      {renderSearchInput()}
       <FlatList
-        data={data}
         numColumns={2}
         style={styles.list}
         renderItem={renderItem}
@@ -82,6 +144,7 @@ const HomeScreen: React.FC<Props> = ({testID = 'HomeScreen'}) => {
         ListEmptyComponent={ListEmptyComponent}
         keyExtractor={(_, index) => String(index)}
         contentContainerStyle={styles.listContent}
+        data={search ? filteredData : data}
         refreshControl={
           <RefreshControl
             refreshing={isLoading}
@@ -102,7 +165,7 @@ const styles = StyleSheet.create({
   },
   list: {
     flex: 1,
-    marginVertical: 16,
+    marginBottom: 16,
   },
   listContent: {
     flexGrow: 1,
@@ -110,4 +173,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  search: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  inputContainer: {
+    margin: 16,
+    padding: 8,
+    borderRadius: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  searchIcon: {
+    padding: 8,
+  },
+  input: {},
 });
