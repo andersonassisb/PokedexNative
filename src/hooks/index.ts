@@ -1,6 +1,6 @@
-import {useCallback, useEffect, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {AppDispatch, RootState} from '../store/store';
+import { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../store/store';
 import {
   fetchAll,
   selectDataByName,
@@ -13,13 +13,12 @@ export function useGetAllPokemons() {
   const [isReady, setIsReady] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
 
-  const {data, status, offset} = useSelector((state: RootState) =>
+  const { data, status, offset } = useSelector((state: RootState) =>
     selectAllPokemons(state),
   );
 
   const loadPokemons = useCallback(() => {
-    console.log(offset);
-    dispatch(fetchAll({offset}));
+    dispatch(fetchAll({ offset }));
   }, [dispatch, offset]);
 
   useEffect(() => {
@@ -61,7 +60,6 @@ export function useGetPokemonByNameQuery(name: string) {
 
   useEffect(() => {
     if (status === undefined || status === 'fetching') {
-      console.log('fetching');
       dispatch(fetchPokemonByName(name));
     }
   }, [status, name, dispatch]);
@@ -71,5 +69,5 @@ export function useGetPokemonByNameQuery(name: string) {
   const isError = status === 'rejected';
   const isSuccess = status === 'fulfilled';
 
-  return {data, isUninitialized, isLoading, isError, isSuccess};
+  return { data, isUninitialized, isLoading, isError, isSuccess };
 }

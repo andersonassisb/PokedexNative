@@ -1,8 +1,8 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {capitalize} from 'lodash';
 import {dispatch} from '../store/store';
 import {IResult} from '../services/types';
 import {useGetAllPokemons} from '../hooks';
-import {capitalize, debounce} from 'lodash';
 import {Loading} from '../components/loading';
 import PokemonCard from '../components/pokemon-card';
 import {useNavigation} from '@react-navigation/native';
@@ -37,12 +37,12 @@ const HomeScreen: React.FC<Props> = ({testID = 'HomeScreen'}) => {
   const {data, isError, isLoading, loadPokemons} = useGetAllPokemons();
 
   const onFilterPokemons = useCallback(
-    debounce((text: string) => {
+    (text: string) => {
       const filtered = data.filter(pokemon =>
         pokemon.name.includes(text.toLowerCase().trim()),
       );
       setFilteredData(filtered);
-    }, 200),
+    },
     [data],
   );
 
@@ -188,5 +188,8 @@ const styles = StyleSheet.create({
   searchIcon: {
     padding: 8,
   },
-  input: {},
+  input: {
+    flex: 1,
+    padding: 8,
+  },
 });
