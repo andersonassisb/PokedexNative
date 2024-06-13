@@ -1,18 +1,21 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-
-import {RootState} from '../store/store';
-import {RESULT_LIMIT} from '../constants';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { RootState } from '../store/store';
+import { RESULT_LIMIT } from '../constants';
 import {
-  IOptionalConfig,
-  MinimalLink,
+  IResult,
   Pokemon,
-  PokemonPageResult,
   RequestState,
+  IOptionalConfig,
+  PokemonPageResult,
 } from './types';
 
-export const fetchAll = createAsyncThunk<MinimalLink[], IOptionalConfig>(
+const getPokemonData = async (name: string) => {
+  return fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)
+}
+
+export const fetchAll = createAsyncThunk<IResult[], IOptionalConfig>(
   'pokemon/fetchAll',
-  async ({limit = RESULT_LIMIT, offset}, {rejectWithValue}) => {
+  async ({ limit = RESULT_LIMIT, offset }, { rejectWithValue }) => {
     const response = await fetch(
       `https://pokeapi.co/api/v2/pokemon/?limit=${limit}&offset=${offset}`,
     );
@@ -20,15 +23,29 @@ export const fetchAll = createAsyncThunk<MinimalLink[], IOptionalConfig>(
     if (response.status < 200 || response.status >= 300) {
       return rejectWithValue(data);
     }
-    return data.results;
+    const { results } = data;
+    const pokemons = await Promise.all(results.map(async r => {
+      const response = await getPokemonData(r.name);
+      const data = (await response.json()) as Pokemon;
+      return {
+        ...r,
+        data: {
+          id: data.id,
+          front_default:
+            data.sprites.front_default,
+          types: data.types
+        }
+      };
+    }));
+    return pokemons;
   },
 );
 
 export const fetchPokemonByName = createAsyncThunk<Pokemon, string>(
   'pokemon/fetchByName',
-  async (name, {rejectWithValue}) => {
-    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
-    const data = await response.json();
+  async (name, { rejectWithValue }) => {
+    const response = await getPokemonData(name);
+    const data = (await response.json()) as Pokemon;
     if (response.status < 200 || response.status >= 300) {
       return rejectWithValue(data);
     }
@@ -42,7 +59,7 @@ export const pokemonsSlice = createSlice({
   name: 'pokemons',
   initialState: {
     offset: 0,
-    data: [] as MinimalLink[],
+    data: [] as IResult[],
     status: 'idle' as RequestState,
   },
   reducers: {
@@ -65,7 +82,7 @@ export const pokemonsSlice = createSlice({
   },
 });
 
-export const {incrementOffset} = pokemonsSlice.actions;
+export const { incrementOffset } = pokemonsSlice.actions;
 
 export const pokemonSlice = createSlice({
   name: 'pokemon',

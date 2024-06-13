@@ -1,34 +1,62 @@
 import React, {useMemo} from 'react';
-import {MinimalLink} from 'src/services/types';
+import {IResult} from 'src/services/types';
 import {
+  Text,
   Image,
   StyleSheet,
-  Text,
   TouchableOpacity,
   useWindowDimensions,
+  View,
 } from 'react-native';
-import {useGetPokemonByNameQuery} from '../hooks';
+import {useTheme} from '../global/styles/context';
 
 interface Props {
+  data: IResult;
   testID?: string;
-  data: MinimalLink;
   onPress: () => void;
 }
 
 const styles = StyleSheet.create({
   container: {
-    margin: 16,
-    minHeight: 96,
-    borderRadius: 8,
+    height: 180,
+    elevation: 2,
+    borderRadius: 16,
+    marginVertical: 24,
     alignItems: 'center',
+    marginHorizontal: 16,
     justifyContent: 'center',
-    backgroundColor: '#6d99db',
+    shadowColor: '#1f1f1f',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
   },
   text: {
-    fontSize: 16,
-    color: 'white',
+    fontSize: 18,
+    color: '#1c2352',
     fontWeight: 'bold',
     textTransform: 'capitalize',
+  },
+  image: {
+    top: -35,
+    left: 25,
+    width: 160,
+    height: 160,
+    position: 'absolute',
+    shadowColor: '#1f1f1f',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  infoContainer: {
+    top: 136,
+    position: 'absolute',
   },
 });
 
@@ -40,21 +68,39 @@ const PokemonCard: React.FC<Props> = ({
   const {width} = useWindowDimensions();
   const cardWidth = useMemo(() => width / 2 - 32, [width]);
 
-  const {data} = useGetPokemonByNameQuery(pokemon.name);
+  const {colors} = useTheme();
+
+  const data = useMemo(() => pokemon.data, [pokemon]);
 
   if (!data) return null;
+
+  const renderContent = () => {
+    return (
+      <>
+        <Image
+          resizeMode="cover"
+          style={styles.image}
+          source={{uri: data.front_default}}
+        />
+        <View style={styles.infoContainer}>
+          <Text style={styles.text}>{pokemon.name}</Text>
+        </View>
+      </>
+    );
+  };
 
   return (
     <TouchableOpacity
       testID={testID}
       onPress={onPress}
-      style={[styles.container, {width: cardWidth}]}>
-      <Text style={styles.text}>{pokemon.name}</Text>
-      <Image
-        style={{width: 96, height: 96}}
-        resizeMode="center"
-        source={{uri: data.sprites.front_default}}
-      />
+      style={[
+        styles.container,
+        {width: cardWidth},
+        {
+          backgroundColor: colors.backgroundCard[data.types[0].type.name],
+        },
+      ]}>
+      {renderContent()}
     </TouchableOpacity>
   );
 };

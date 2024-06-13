@@ -95,16 +95,25 @@ export type Pokemon = {
     stat: MinimalLink;
   };
   types: {
-    slot: number;
-    type: MinimalLink;
-  };
+    type: {
+      name: string;
+    }
+  }[];
 };
+
+export interface IResult extends MinimalLink {
+  data: {
+    id: number;
+    front_default: string;
+    types: Pokemon['types'];
+  };
+}
 
 export type PokemonPageResult = {
   count: number;
   next: string | null;
   previous: string | null;
-  results: MinimalLink[];
+  results: IResult[];
 };
 
 export type RequestState =

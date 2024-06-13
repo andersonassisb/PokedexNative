@@ -1,9 +1,9 @@
 import React, {useCallback} from 'react';
 import {capitalize} from 'lodash';
 import {dispatch} from '../store/store';
+import {IResult} from '../services/types';
 import {useGetAllPokemons} from '../hooks';
 import {Loading} from '../components/loading';
-import {MinimalLink} from '../services/types';
 import PokemonCard from '../components/pokemon-card';
 import {useNavigation} from '@react-navigation/native';
 import {incrementOffset} from '../services/middlewares';
@@ -19,24 +19,21 @@ const HomeScreen: React.FC<Props> = ({testID = 'HomeScreen'}) => {
 
   const {data, isError, isLoading} = useGetAllPokemons();
 
-  const renderItem = useCallback<ListRenderItem<MinimalLink>>(
-    ({item, index}) => {
-      const onPress = () => {
-        navigation.navigate('Details', {
-          title: capitalize(item.name),
-          name: item.name,
-        });
-      };
-      return (
-        <PokemonCard
-          testID={`${testID}-pokemon-${index}`}
-          onPress={onPress}
-          data={item}
-        />
-      );
-    },
-    [],
-  );
+  const renderItem = useCallback<ListRenderItem<IResult>>(({item, index}) => {
+    const onPress = () => {
+      navigation.navigate('Details', {
+        title: capitalize(item.name),
+        name: item.name,
+      });
+    };
+    return (
+      <PokemonCard
+        testID={`${testID}-pokemon-${index}`}
+        onPress={onPress}
+        data={item}
+      />
+    );
+  }, []);
 
   const loadMore = () => {
     dispatch(incrementOffset());
@@ -83,13 +80,15 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#faf7e1',
   },
   list: {
     flex: 1,
+    marginVertical: 16,
   },
   listContent: {
     flexGrow: 1,
+    paddingBottom: 32,
     alignItems: 'center',
     justifyContent: 'space-between',
   },
