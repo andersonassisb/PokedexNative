@@ -2,11 +2,11 @@ import React, {useMemo} from 'react';
 import {IResult} from 'src/services/types';
 import {
   Text,
+  View,
   Image,
   StyleSheet,
   TouchableOpacity,
   useWindowDimensions,
-  View,
 } from 'react-native';
 import {useTheme} from '../global/styles/context';
 
@@ -18,13 +18,11 @@ interface Props {
 
 const styles = StyleSheet.create({
   container: {
-    height: 180,
+    height: 210,
     elevation: 2,
     borderRadius: 16,
     marginVertical: 24,
-    alignItems: 'center',
     marginHorizontal: 16,
-    justifyContent: 'center',
     shadowColor: '#1f1f1f',
     shadowOffset: {
       width: 0,
@@ -34,7 +32,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
   text: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#1c2352',
     fontWeight: 'bold',
     textTransform: 'capitalize',
@@ -56,7 +54,9 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     top: 136,
+    flexWrap: 'wrap',
     position: 'absolute',
+    marginHorizontal: 16,
   },
 });
 
@@ -83,7 +83,12 @@ const PokemonCard: React.FC<Props> = ({
           source={{uri: data.front_default}}
         />
         <View style={styles.infoContainer}>
-          <Text style={styles.text}>{pokemon.name}</Text>
+          <Text
+            style={[
+              styles.text,
+              {color: '#faf7e1'},
+            ]}>{`#${pokemon.data.id}`}</Text>
+          <Text style={[styles.text, {marginVertical: 8}]}>{pokemon.name}</Text>
         </View>
       </>
     );
