@@ -1,6 +1,6 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { RootState } from '../store/store';
-import { RESULT_LIMIT } from '../constants';
+import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import {RootState} from '../store/store';
+import {RESULT_LIMIT} from '../constants';
 import {
   IResult,
   Pokemon,
@@ -10,12 +10,12 @@ import {
 } from './types';
 
 const getPokemonData = async (name: string) => {
-  return fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)
-}
+  return fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+};
 
 export const fetchAll = createAsyncThunk<IResult[], IOptionalConfig>(
   'pokemon/fetchAll',
-  async ({ limit = RESULT_LIMIT, offset }, { rejectWithValue }) => {
+  async ({limit = RESULT_LIMIT, offset}, {rejectWithValue}) => {
     const response = await fetch(
       `https://pokeapi.co/api/v2/pokemon/?limit=${limit}&offset=${offset}`,
     );
@@ -23,27 +23,28 @@ export const fetchAll = createAsyncThunk<IResult[], IOptionalConfig>(
     if (response.status < 200 || response.status >= 300) {
       return rejectWithValue(data);
     }
-    const { results } = data;
-    const pokemons = await Promise.all(results.map(async r => {
-      const response = await getPokemonData(r.name);
-      const data = (await response.json()) as Pokemon;
-      return {
-        ...r,
-        data: {
-          id: data.id,
-          front_default:
-            data.sprites.front_default,
-          types: data.types
-        }
-      };
-    }));
+    const {results} = data;
+    const pokemons = await Promise.all(
+      results.map(async r => {
+        const response = await getPokemonData(r.name);
+        const data = (await response.json()) as Pokemon;
+        return {
+          ...r,
+          data: {
+            id: data.id,
+            front_default: data.sprites.front_default,
+            types: data.types,
+          },
+        };
+      }),
+    );
     return pokemons;
   },
 );
 
 export const fetchPokemonByName = createAsyncThunk<Pokemon, string>(
   'pokemon/fetchByName',
-  async (name, { rejectWithValue }) => {
+  async (name, {rejectWithValue}) => {
     const response = await getPokemonData(name);
     const data = (await response.json()) as Pokemon;
     if (response.status < 200 || response.status >= 300) {
@@ -82,7 +83,7 @@ export const pokemonsSlice = createSlice({
   },
 });
 
-export const { incrementOffset } = pokemonsSlice.actions;
+export const {incrementOffset} = pokemonsSlice.actions;
 
 export const pokemonSlice = createSlice({
   name: 'pokemon',

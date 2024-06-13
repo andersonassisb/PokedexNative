@@ -97,7 +97,7 @@ export type Pokemon = {
   types: {
     type: {
       name: string;
-    }
+    };
   }[];
 };
 

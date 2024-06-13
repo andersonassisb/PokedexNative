@@ -1,9 +1,6 @@
-import { configureStore } from '@reduxjs/toolkit';
+import {configureStore} from '@reduxjs/toolkit';
 import storage from '@react-native-async-storage/async-storage';
-import {
-  persistStore,
-  persistReducer,
-} from 'redux-persist';
+import {persistStore, persistReducer} from 'redux-persist';
 
 import rootReducer from './reducers';
 
