@@ -1,9 +1,10 @@
-import {combineReducers} from 'redux';
-import {pokemonSlice, pokemonsSlice} from '../../services/middlewares';
+import { combineReducers } from 'redux';
+import { favoritePokemonsSlice, pokemonSlice, pokemonsSlice } from '../../services/middlewares';
 
 const rootReducer = combineReducers({
-  pokemons: pokemonsSlice.reducer,
   pokemon: pokemonSlice.reducer,
+  pokemons: pokemonsSlice.reducer,
+  favoritePokemons: favoritePokemonsSlice.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

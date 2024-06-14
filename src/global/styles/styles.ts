@@ -5,6 +5,7 @@ export default {
       softGray: '#b4b5bf',
       secondary: '#faf7e1',
     },
+    bookmark: 'tomato',
     background: '#343D64',
     text: '#F7B916',
     light_text: '#ffff',

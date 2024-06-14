@@ -5,6 +5,7 @@ import {
   useWindowDimensions,
   Image,
   ScrollView,
+  TouchableOpacity,
 } from 'react-native';
 import React, {useEffect, useMemo} from 'react';
 import {useGetPokemonByNameQuery} from '../hooks';
@@ -23,8 +24,13 @@ import {
   GestureDetector,
   GestureHandlerRootView,
 } from 'react-native-gesture-handler';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import {capitalize} from 'lodash';
+import {RootState} from '../store/store';
+import {Pokemon} from '../services/types';
+import {isAlreadyBookmarked} from '../helpers';
+import {useDispatch, useSelector} from 'react-redux';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import {addFavorite, removeFavorite} from '../services/middlewares';
 
 interface Props {
   testID?: string;
@@ -33,6 +39,11 @@ interface Props {
 const DetailsScreen: React.FC<Props> = ({testID = 'DetailsScreen'}) => {
   const navigation = useNavigation<DetailsScreenNavigationProp>();
   const route = useRoute<DetailsScreenRouteProp>();
+
+  const dispatch = useDispatch();
+  const favorites = useSelector(
+    (state: RootState) => state.favoritePokemons.favorites,
+  );
 
   const {colors} = useTheme();
   const {height} = useWindowDimensions();
@@ -43,6 +54,26 @@ const DetailsScreen: React.FC<Props> = ({testID = 'DetailsScreen'}) => {
   );
 
   const {data} = useGetPokemonByNameQuery(name);
+
+  const onBookmarkPokemon = (pokemon: Pokemon) => {
+    dispatch(addFavorite(pokemon));
+  };
+
+  const onUnbookmarkPokemon = (id: number) => {
+    dispatch(removeFavorite(id));
+  };
+
+  const isBookmarked = useMemo(() => {
+    return !!data ? isAlreadyBookmarked(favorites, data.id) : false;
+  }, [favorites, data]);
+
+  const handleBookmark = (pokemon: Pokemon) => {
+    if (isBookmarked) {
+      onUnbookmarkPokemon(pokemon.id);
+    } else {
+      onBookmarkPokemon(pokemon);
+    }
+  };
 
   const translateY = useSharedValue(height / 2);
 
@@ -66,6 +97,22 @@ const DetailsScreen: React.FC<Props> = ({testID = 'DetailsScreen'}) => {
   }, [navigation, title]);
 
   if (!data) return null;
+
+  const renderBookmarkIcon = () => {
+    const iconProps = isBookmarked ? {solid: true} : {light: true};
+    return (
+      <TouchableOpacity onPress={() => handleBookmark(data)}>
+        {
+          <Icon
+            size={24}
+            name="bookmark"
+            color={colors.bookmark}
+            {...iconProps}
+          />
+        }
+      </TouchableOpacity>
+    );
+  };
 
   const renderTypes = () => {
     return (
@@ -113,9 +160,19 @@ const DetailsScreen: React.FC<Props> = ({testID = 'DetailsScreen'}) => {
               />
             </View>
             <View style={styles.textContainer}>
-              <Text style={[styles.idText, {color: colors.brand.primary}]}>
-                #{data.id}
-              </Text>
+              <View
+                style={{
+                  marginBottom: 16,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text style={[styles.idText, {color: colors.brand.primary}]}>
+                  #{data.id}
+                </Text>
+                {renderBookmarkIcon()}
+              </View>
+
               <Text style={[styles.weightText, {color: colors.brand.primary}]}>
                 Weight: {data.weight}
               </Text>
@@ -302,7 +359,7 @@ const styles = StyleSheet.create({
   },
   idText: {
     fontSize: 28,
-    marginBottom: 16,
+    marginRight: 8,
     fontWeight: '900',
   },
   weightText: {
