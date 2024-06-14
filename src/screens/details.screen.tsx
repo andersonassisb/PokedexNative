@@ -203,7 +203,7 @@ const DetailsScreen: React.FC<Props> = ({testID = 'DetailsScreen'}) => {
                     fontWeight: '700',
                     alignSelf: 'center',
                   }}>
-                  Base States
+                  Base Stats
                 </Text>
                 <View
                   style={{

@@ -10,6 +10,7 @@ import {useTheme} from '../global/styles/context';
 import DetailsScreen from '../screens/details.screen';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import BookmarksScreen from '../screens/bookmarks.screen';
 
 const Tab = createBottomTabNavigator();
 
@@ -56,6 +57,25 @@ function StackNavigator() {
     );
   };
 
+  const BookmarksStackNavigator = () => {
+    return (
+      <Stack.Navigator
+        initialRouteName="Bookmark"
+        screenOptions={{
+          headerBackTitleVisible: false,
+        }}>
+        <Stack.Screen
+          name="Bookmark"
+          component={BookmarksScreen}
+          options={{
+            title: 'Bookmarks',
+            ...headerProps,
+          }}
+        />
+      </Stack.Navigator>
+    );
+  };
+
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -80,7 +100,7 @@ function StackNavigator() {
           headerShown: false,
         })}>
         <Tab.Screen name="Pokémons" component={StackNavigator} />
-        <Tab.Screen name="Bookmarks" component={StackNavigator} />
+        <Tab.Screen name="Bookmarks" component={BookmarksStackNavigator} />
       </Tab.Navigator>
     </NavigationContainer>
   );
