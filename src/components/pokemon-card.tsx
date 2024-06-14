@@ -19,17 +19,18 @@ interface Props {
 const styles = StyleSheet.create({
   container: {
     height: 210,
-    elevation: 2,
+    elevation: 3,
     borderRadius: 16,
     marginVertical: 24,
     marginHorizontal: 16,
     shadowColor: '#1f1f1f',
     shadowOffset: {
       width: 0,
-      height: 1,
+      height: 2,
     },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+    backgroundColor: 'transparent',
   },
   text: {
     fontSize: 16,
@@ -43,14 +44,7 @@ const styles = StyleSheet.create({
     width: 160,
     height: 160,
     position: 'absolute',
-    shadowColor: '#1f1f1f',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
-    elevation: 2,
+    backgroundColor: 'transparent',
   },
   infoContainer: {
     top: 136,
