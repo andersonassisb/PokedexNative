@@ -139,12 +139,12 @@ const HomeScreen: React.FC<Props> = ({testID = 'HomeScreen'}) => {
         renderItem={renderItem}
         onEndReached={loadMore}
         onEndReachedThreshold={0.1}
+        data={search ? filteredData : data}
         testID={`${testID}-list-pokemons`}
         ListFooterComponent={renderFooter}
         ListEmptyComponent={ListEmptyComponent}
         keyExtractor={(_, index) => String(index)}
         contentContainerStyle={styles.listContent}
-        data={search ? filteredData : data}
         refreshControl={
           <RefreshControl
             refreshing={isLoading}
