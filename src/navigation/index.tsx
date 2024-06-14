@@ -8,6 +8,10 @@ import {RootStackParamList} from './types';
 import HomeScreen from '../screens/home.screen';
 import {useTheme} from '../global/styles/context';
 import DetailsScreen from '../screens/details.screen';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+const Tab = createBottomTabNavigator();
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -25,8 +29,8 @@ function StackNavigator() {
     },
   } as StackNavigationOptions;
 
-  return (
-    <NavigationContainer>
+  const StackNavigator = () => {
+    return (
       <Stack.Navigator
         initialRouteName="Home"
         screenOptions={{
@@ -49,6 +53,35 @@ function StackNavigator() {
           })}
         />
       </Stack.Navigator>
+    );
+  };
+
+  return (
+    <NavigationContainer>
+      <Tab.Navigator
+        initialRouteName="Pokémons"
+        screenOptions={({route}) => ({
+          tabBarIcon: ({color, size}) => {
+            let iconName = 'list';
+
+            if (route.name === 'Pokémons') {
+              iconName = 'list';
+            } else if (route.name === 'Bookmarks') {
+              iconName = 'bookmark';
+            }
+
+            return <Icon name={iconName} size={size} color={color} />;
+          },
+          tabBarActiveTintColor: colors.brand.primary,
+          tabBarInactiveTintColor: colors.brand.softGray,
+          tabBarStyle: {
+            backgroundColor: colors.brand.secondary,
+          },
+          headerShown: false,
+        })}>
+        <Tab.Screen name="Pokémons" component={StackNavigator} />
+        <Tab.Screen name="Bookmarks" component={StackNavigator} />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }

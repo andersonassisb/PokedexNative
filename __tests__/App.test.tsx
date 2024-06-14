@@ -12,6 +12,8 @@ import {it} from '@jest/globals';
 // Note: test renderer must be required after react-native.
 import renderer from 'react-test-renderer';
 
+jest.useFakeTimers();
+
 jest.mock('redux-persist', () => {
   const originalModule = jest.requireActual('redux-persist');
   return {
