@@ -1,4 +1,11 @@
-import {Text, View, StyleSheet, useWindowDimensions, Image} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  useWindowDimensions,
+  Image,
+  ScrollView,
+} from 'react-native';
 import React, {useEffect, useMemo} from 'react';
 import {useGetPokemonByNameQuery} from '../hooks';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -128,23 +135,100 @@ const DetailsScreen: React.FC<Props> = ({testID = 'DetailsScreen'}) => {
               animatedStyle,
             ]}>
             <Icon name="chevron-up" size={24} color={colors.brand.secondary} />
-            <View style={styles.infoContainer}>
-              <View style={{flex: 1}}>
-                <Text style={{color: 'white', fontSize: 24, fontWeight: '700'}}>
+            <ScrollView
+              style={{marginVertical: 16, paddingBottom: 64}}
+              contentContainerStyle={styles.infoContainer}>
+              <View style={{width: '100%'}}>
+                <Text
+                  style={{
+                    fontSize: 28,
+                    color: 'white',
+                    fontWeight: '700',
+                    alignSelf: 'center',
+                  }}>
                   Base States
                 </Text>
                 <View
                   style={{
+                    width: '100%',
                     marginVertical: 16,
+                    alignItems: 'flex-start',
+                    justifyContent: 'space-between',
                   }}>
                   {data.stats.map((stat, index) => (
-                    <Text key={index}>
-                      {capitalize(stat.stat.name)}: {stat.base_stat}
-                    </Text>
+                    <View
+                      key={index}
+                      style={{
+                        width: '100%',
+                        marginVertical: 8,
+                        flexDirection: 'row',
+                        alignItems: 'flex-start',
+                        justifyContent: 'space-between',
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 18,
+                          color: colors.brand.primary,
+                          fontWeight: '700',
+                        }}>
+                        {capitalize(stat.stat.name)}:{' '}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 18,
+                          color: colors.brand.primary,
+                          fontWeight: '500',
+                        }}>
+                        {stat.base_stat}
+                      </Text>
+                    </View>
                   ))}
                 </View>
               </View>
-            </View>
+              <View style={{flex: 1}}>
+                <Text
+                  style={{
+                    fontSize: 28,
+                    color: 'white',
+                    fontWeight: '700',
+                    alignSelf: 'center',
+                  }}>
+                  Abilities
+                </Text>
+                <View
+                  style={{
+                    width: '100%',
+                    marginRight: 8,
+                    flexWrap: 'wrap',
+                    marginVertical: 16,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  {data.abilities.map((abilityItem, index) => (
+                    <View
+                      key={index}
+                      style={{
+                        marginRight: 8,
+                        borderWidth: 1,
+                        borderRadius: 8,
+                        borderColor: colors.brand.primary,
+                      }}>
+                      <Text
+                        key={index}
+                        style={{
+                          padding: 8,
+                          fontSize: 18,
+                          fontWeight: '700',
+                          color: colors.brand.primary,
+                        }}>
+                        {capitalize(abilityItem.ability.name)}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            </ScrollView>
           </Animated.View>
         </GestureDetector>
       </View>
@@ -194,7 +278,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   slidingView: {
-    width: '100%',
     position: 'absolute',
     alignItems: 'center',
     borderTopLeftRadius: 32,
@@ -209,7 +292,9 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   infoContainer: {
-    margin: 32,
+    flexGrow: 1,
+    marginVertical: 16,
+    paddingHorizontal: 16,
     alignSelf: 'flex-start',
   },
   text: {
@@ -218,7 +303,7 @@ const styles = StyleSheet.create({
   idText: {
     fontSize: 28,
     marginBottom: 16,
-    fontWeight: '700',
+    fontWeight: '900',
   },
   weightText: {
     fontSize: 24,
