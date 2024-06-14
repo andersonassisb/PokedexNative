@@ -1,4 +1,4 @@
-import {Text, View, StyleSheet, useWindowDimensions} from 'react-native';
+import {Text, View, StyleSheet, useWindowDimensions, Image} from 'react-native';
 import React, {useEffect, useMemo} from 'react';
 import {useGetPokemonByNameQuery} from '../hooks';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -17,6 +17,7 @@ import {
   GestureHandlerRootView,
 } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {capitalize} from 'lodash';
 
 interface Props {
   testID?: string;
@@ -36,7 +37,7 @@ const DetailsScreen: React.FC<Props> = ({testID = 'DetailsScreen'}) => {
 
   const {data} = useGetPokemonByNameQuery(name);
 
-  const translateY = useSharedValue(height / 3);
+  const translateY = useSharedValue(height / 2);
 
   const panGesture = Gesture.Pan()
     .onStart(() => {
@@ -59,9 +60,28 @@ const DetailsScreen: React.FC<Props> = ({testID = 'DetailsScreen'}) => {
 
   if (!data) return null;
 
+  const renderTypes = () => {
+    return (
+      <View style={styles.typeContainer}>
+        <Text style={[styles.typeLabel, {color: colors.brand.primary}]}>
+          Types:{' '}
+        </Text>
+        {data.types.map((t, index) => (
+          <View
+            key={index}
+            style={[styles.type, {borderColor: colors.brand.primary}]}>
+            <Text style={[styles.typeText, {color: colors.brand.primary}]}>
+              {capitalize(t.type.name)}
+            </Text>
+          </View>
+        ))}
+      </View>
+    );
+  };
+
   return (
     <GestureHandlerRootView style={{flex: 1}}>
-      <View style={styles.container}>
+      <View style={styles.container} testID={testID}>
         <View
           style={[
             styles.topContent,
@@ -70,7 +90,30 @@ const DetailsScreen: React.FC<Props> = ({testID = 'DetailsScreen'}) => {
             },
           ]}>
           <View style={styles.spriteContainer}>
-            <Text style={styles.text}>Conteúdo Estático</Text>
+            <View
+              style={[
+                styles.imageContainer,
+                {
+                  backgroundColor:
+                    colors.boxType[data.types[0].type.name] ||
+                    colors.backgroundCard[data.types[0].type.name],
+                },
+              ]}>
+              <Image
+                resizeMode="cover"
+                style={styles.image}
+                source={{uri: data.sprites.front_default}}
+              />
+            </View>
+            <View style={styles.textContainer}>
+              <Text style={[styles.idText, {color: colors.brand.primary}]}>
+                #{data.id}
+              </Text>
+              <Text style={[styles.weightText, {color: colors.brand.primary}]}>
+                Weight: {data.weight}
+              </Text>
+              {renderTypes()}
+            </View>
           </View>
         </View>
         <GestureDetector gesture={panGesture}>
@@ -85,8 +128,23 @@ const DetailsScreen: React.FC<Props> = ({testID = 'DetailsScreen'}) => {
               animatedStyle,
             ]}>
             <Icon name="chevron-up" size={24} color={colors.brand.secondary} />
-            <View style={styles.infoContainer}></View>
-            <Text style={styles.text}>Card Deslizante</Text>
+            <View style={styles.infoContainer}>
+              <View style={{flex: 1}}>
+                <Text style={{color: 'white', fontSize: 24, fontWeight: '700'}}>
+                  Base States
+                </Text>
+                <View
+                  style={{
+                    marginVertical: 16,
+                  }}>
+                  {data.stats.map((stat, index) => (
+                    <Text key={index}>
+                      {capitalize(stat.stat.name)}: {stat.base_stat}
+                    </Text>
+                  ))}
+                </View>
+              </View>
+            </View>
           </Animated.View>
         </GestureDetector>
       </View>
@@ -105,7 +163,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   spriteContainer: {
-    marginVertical: 32,
+    marginVertical: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  imageContainer: {
+    width: 210,
+    height: 210,
+    padding: 16,
+    borderRadius: 105,
+    marginVertical: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#1f1f1f',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.4,
+    shadowRadius: 1,
+    elevation: 3,
+  },
+  image: {
+    height: 200,
+    width: 200,
+  },
+  textContainer: {
+    width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -125,12 +209,41 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   infoContainer: {
-    marginVertical: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
+    margin: 32,
+    alignSelf: 'flex-start',
   },
   text: {
     fontSize: 20,
-    color: 'black',
+  },
+  idText: {
+    fontSize: 28,
+    marginBottom: 16,
+    fontWeight: '700',
+  },
+  weightText: {
+    fontSize: 24,
+    marginBottom: 16,
+    fontWeight: '700',
+  },
+  typeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  typeLabel: {
+    fontSize: 24,
+    fontWeight: '700',
+  },
+  type: {
+    padding: 8,
+    borderWidth: 1,
+    marginRight: 8,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  typeText: {
+    fontSize: 18,
+    fontWeight: '700',
   },
 });

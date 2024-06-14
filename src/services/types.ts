@@ -93,7 +93,7 @@ export type Pokemon = {
     base_stat: number;
     effort: number;
     stat: MinimalLink;
-  };
+  }[];
   types: {
     type: {
       name: string;
