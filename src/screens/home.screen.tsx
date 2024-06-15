@@ -20,6 +20,7 @@ import {
 } from 'react-native';
 import {useTheme} from '../global/styles/context';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 interface Props {
   testID?: string;
@@ -116,6 +117,16 @@ const HomeScreen: React.FC<Props> = ({testID = 'HomeScreen'}) => {
             underlineColorAndroid="transparent"
             placeholderTextColor={colors.brand.softGray}
           />
+          <TouchableOpacity
+            onPress={() => setSearch('')}
+            hitSlop={{top: 16, right: 16, bottom: 16, left: 16}}>
+            <Icon
+              size={18}
+              name="close"
+              style={styles.searchIcon}
+              color={colors.brand.primary}
+            />
+          </TouchableOpacity>
         </View>
       </View>
     );
