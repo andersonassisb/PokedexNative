@@ -1,6 +1,6 @@
-import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { RootState } from '../store/store';
-import { RESULT_LIMIT } from '../constants';
+import {PayloadAction, createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import {RootState} from '../store/store';
+import {RESULT_LIMIT} from '../constants';
 import {
   IResult,
   Pokemon,
@@ -15,7 +15,7 @@ const getPokemonData = async (name: string) => {
 
 export const fetchAll = createAsyncThunk<IResult[], IOptionalConfig>(
   'pokemon/fetchAll',
-  async ({ limit = RESULT_LIMIT, offset }, { rejectWithValue }) => {
+  async ({limit = RESULT_LIMIT, offset}, {rejectWithValue}) => {
     const response = await fetch(
       `https://pokeapi.co/api/v2/pokemon/?limit=${limit}&offset=${offset}`,
     );
@@ -23,7 +23,7 @@ export const fetchAll = createAsyncThunk<IResult[], IOptionalConfig>(
     if (response.status < 200 || response.status >= 300) {
       return rejectWithValue(data);
     }
-    const { results } = data;
+    const {results} = data;
     const pokemons = await Promise.all(
       results.map(async r => {
         const response = await getPokemonData(r.name);
@@ -44,7 +44,7 @@ export const fetchAll = createAsyncThunk<IResult[], IOptionalConfig>(
 
 export const fetchPokemonByName = createAsyncThunk<Pokemon, string>(
   'pokemon/fetchByName',
-  async (name, { rejectWithValue }) => {
+  async (name, {rejectWithValue}) => {
     const response = await getPokemonData(name);
     const data = (await response.json()) as Pokemon;
     if (response.status < 200 || response.status >= 300) {
@@ -88,7 +88,7 @@ export const pokemonsSlice = createSlice({
   },
 });
 
-export const { incrementOffset, resetData } = pokemonsSlice.actions;
+export const {incrementOffset, resetData} = pokemonsSlice.actions;
 
 export const pokemonSlice = createSlice({
   name: 'pokemon',
@@ -136,7 +136,7 @@ export const favoritePokemonsSlice = createSlice({
   },
 });
 
-export const { addFavorite, removeFavorite } = favoritePokemonsSlice.actions;
+export const {addFavorite, removeFavorite} = favoritePokemonsSlice.actions;
 
 // selectors
 
