@@ -7,7 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import React, {useEffect, useMemo} from 'react';
+import React, {memo, useEffect, useMemo} from 'react';
 import {useGetPokemonByNameQuery} from '../hooks';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {
@@ -28,6 +28,7 @@ import {capitalize} from 'lodash';
 import {RootState} from '../store/store';
 import {Pokemon} from '../services/types';
 import {isAlreadyBookmarked} from '../helpers';
+import EggGroups from '../components/egg-groups';
 import {useDispatch, useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {addFavorite, removeFavorite} from '../services/middlewares';
@@ -133,6 +134,27 @@ const DetailsScreen: React.FC<Props> = ({testID = 'DetailsScreen'}) => {
     );
   };
 
+  const StatProgress = memo(({stat}: {stat: number}) => {
+    return (
+      <View
+        style={{
+          height: 8,
+          width: 100,
+          borderRadius: 4,
+          backgroundColor: colors.brand.primary,
+        }}>
+        <View
+          style={{
+            height: 8,
+            borderRadius: 4,
+            backgroundColor: 'white',
+            width: (stat / 100) * 100,
+          }}
+        />
+      </View>
+    );
+  });
+
   return (
     <GestureHandlerRootView style={{flex: 1}}>
       <View style={styles.container} testID={testID}>
@@ -225,24 +247,39 @@ const DetailsScreen: React.FC<Props> = ({testID = 'DetailsScreen'}) => {
                       <Text
                         style={{
                           fontSize: 18,
-                          color: colors.brand.primary,
                           fontWeight: '700',
+                          color: colors.brand.primary,
                         }}>
                         {capitalize(stat.stat.name)}:{' '}
                       </Text>
-                      <Text
+                      <View
                         style={{
-                          fontSize: 18,
-                          color: colors.brand.primary,
-                          fontWeight: '500',
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
                         }}>
-                        {stat.base_stat}
-                      </Text>
+                        <Text
+                          style={{
+                            fontSize: 18,
+                            marginRight: 8,
+                            fontWeight: '500',
+                            color: colors.brand.primary,
+                          }}>
+                          {stat.base_stat}
+                        </Text>
+                        <StatProgress stat={stat.base_stat} />
+                      </View>
                     </View>
                   ))}
                 </View>
               </View>
-              <View style={{flex: 1}}>
+              <View
+                style={{
+                  width: '100%',
+                  alignSelf: 'center',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
                 <Text
                   style={{
                     fontSize: 28,
@@ -257,10 +294,8 @@ const DetailsScreen: React.FC<Props> = ({testID = 'DetailsScreen'}) => {
                     width: '100%',
                     marginRight: 8,
                     flexWrap: 'wrap',
-                    marginVertical: 16,
+                    marginVertical: 24,
                     flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
                   }}>
                   {data.abilities.map((abilityItem, index) => (
                     <View
@@ -283,6 +318,33 @@ const DetailsScreen: React.FC<Props> = ({testID = 'DetailsScreen'}) => {
                       </Text>
                     </View>
                   ))}
+                </View>
+              </View>
+              <View
+                style={{
+                  width: '100%',
+                  alignSelf: 'center',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontSize: 28,
+                    color: 'white',
+                    fontWeight: '700',
+                    alignSelf: 'center',
+                  }}>
+                  Species
+                </Text>
+                <View
+                  style={{
+                    width: '100%',
+                    marginRight: 8,
+                    flexWrap: 'wrap',
+                    marginVertical: 24,
+                    flexDirection: 'row',
+                  }}>
+                  <EggGroups species={data.species} />
                 </View>
               </View>
             </ScrollView>
