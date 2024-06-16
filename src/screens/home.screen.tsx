@@ -6,8 +6,8 @@ import {useGetAllPokemons} from '../hooks';
 import {Loading} from '../components/loading';
 import PokemonCard from '../components/pokemon-card';
 import {useNavigation} from '@react-navigation/native';
-import {incrementOffset} from '../services/middlewares';
 import {HomeScreenNavigationProp} from '../navigation/types';
+import {incrementOffset, resetData} from '../services/middlewares';
 import {
   Text,
   View,
@@ -64,6 +64,11 @@ const HomeScreen: React.FC<Props> = ({testID = 'HomeScreen'}) => {
       />
     );
   }, []);
+
+  const onRefresh = () => {
+    dispatch(resetData());
+    loadPokemons();
+  };
 
   const isEnabledLoadMore = useMemo(() => {
     if (search && !filteredData?.length) return false;
@@ -159,11 +164,13 @@ const HomeScreen: React.FC<Props> = ({testID = 'HomeScreen'}) => {
         keyExtractor={(_, index) => String(index)}
         contentContainerStyle={styles.listContent}
         refreshControl={
-          <RefreshControl
-            refreshing={isLoading}
-            onRefresh={loadPokemons}
-            tintColor={colors.brand.primary}
-          />
+          !search ? (
+            <RefreshControl
+              onRefresh={onRefresh}
+              refreshing={isLoading}
+              tintColor={colors.brand.primary}
+            />
+          ) : undefined
         }
       />
     </View>
