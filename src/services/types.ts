@@ -55,7 +55,7 @@ export type Sprites = {
 
 export type ISpecies = {
   egg_groups: MinimalLink[];
-}
+};
 
 export type Pokemon = {
   id: number;
