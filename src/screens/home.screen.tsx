@@ -26,6 +26,8 @@ interface Props {
   testID?: string;
 }
 
+const noop = () => {};
+
 const HomeScreen: React.FC<Props> = ({testID = 'HomeScreen'}) => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
 
@@ -148,12 +150,12 @@ const HomeScreen: React.FC<Props> = ({testID = 'HomeScreen'}) => {
         numColumns={2}
         style={styles.list}
         renderItem={renderItem}
-        onEndReached={loadMore}
         onEndReachedThreshold={0.1}
         data={search ? filteredData : data}
         testID={`${testID}-list-pokemons`}
         ListFooterComponent={renderFooter}
         ListEmptyComponent={ListEmptyComponent}
+        onEndReached={!search ? loadMore : noop}
         keyExtractor={(_, index) => String(index)}
         contentContainerStyle={styles.listContent}
         refreshControl={
