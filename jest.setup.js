@@ -25,3 +25,12 @@ afterEach(async () => {
   await AsyncStorage.clear();
   cleanup();
 });
+
+jest.mock('react-native-splash-screen', () => ({
+  show: jest.fn().mockImplementation(() => {
+    console.log('show splash screen');
+  }),
+  hide: jest.fn().mockImplementation(() => {
+    console.log('hide splash screen');
+  }),
+}));
